@@ -1,6 +1,7 @@
 import os
 import json
 
+NEW_PATH = "wo_start"
 urls = ["https://www.dropbox.com/s/z55j1usmg9nz2gt/The_Chimney_Sweeper.jpg",
 "https://www.dropbox.com/s/rfkd5vtosri5lvz/The_Little_Boy_Lost.jpeg",
 "https://www.dropbox.com/s/e4vxub2pnwvrtjx/The_Human_Abstract.jpeg",
@@ -14,12 +15,17 @@ with open("text.json") as f:
 
 
 def run_code(i,j):
-    if len(os.listdir(f"{i}/{j}"))!=0:
+    if len(os.listdir(f"{NEW_PATH}/{i}/{j}"))!=0:
         print("이미 존재함.")
         return 0
     text = texts[str(i)][j]
     # os.system(f"cd {i}/{j}")
-    command = f"cd {i}/{j};imagine " + f'"{text}"' + f" --start_image_path ../../{i}.jpg --batch_size 512 --iterations 32 --learning_rate 5e-06"
+    # with start image
+    # command = f"cd {i}/{j};imagine " + f'"{text}"' + f" --start_image_path ../../{i}.jpg --batch_size 512 --iterations 32 --learning_rate 5e-06"
+    # assert NEW_PATH == "with_start"
+    # without start image
+    command = f"cd {NEW_PATH}/{i}/{j};imagine " + f'"{text}"' + f" --batch_size 512 --iterations 32 --learning_rate 5e-06 --overwrite True"
+    assert NEW_PATH == "wo_start"
     if len(text.split(" "))<56:
         os.system(command)
     else:
@@ -36,7 +42,7 @@ if __name__ == "__main__":
     for i in range(1,8):
         for j in ["W", "X", "Y", "Z"]:
             print(i,j)
-            dir = os.path.join(str(i),j)
+            dir = os.path.join(NEW_PATH,str(i),j)
             if not os.path.exists(dir):
                 os.makedirs(dir)
             run_code(i,j)
